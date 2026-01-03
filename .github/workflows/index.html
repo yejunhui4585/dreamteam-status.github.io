@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DreamTeam 系统状态</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: white;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        /* 头部样式 */
+        header {
+            background: white;
+            border-bottom: 1px solid #e1e8ed;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            font-size: 16px;
+            color: #ff6b35;
+        }
+        
+        .logo-icon {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .header-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .header-links a {
+            text-decoration: none;
+            color: #657786;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+        
+        .header-links a:hover {
+            color: #ff6b35;
+        }
+        
+        /* 主内容区域 */
+        main {
+            padding: 40px 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        /* 状态通知样式 */
+        .status-notification {
+            background: #ffb74d;
+            padding: 15px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+        
+        .notification-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #c85102;
+            margin-bottom: 10px;
+        }
+        
+        .notification-content {
+            background: white;
+            padding: 15px;
+            border: 1px solid #ffe0b2;
+            font-size: 14px;
+            border-radius: 6px;
+        }
+        
+        .notification-time {
+            font-size: 12px;
+            color: #657786;
+            margin-top: 8px;
+        }
+        
+        /* 关于区域 */
+        .about-section {
+            margin-bottom: 40px;
+        }
+        
+        .about-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1da1f2;
+            margin-bottom: 15px;
+        }
+        
+        .about-content {
+            font-size: 14px;
+            color: #657786;
+            line-height: 1.6;
+        }
+        
+        .about-content p {
+            margin-bottom: 15px;
+        }
+        
+        .about-content a {
+            color: #1da1f2;
+            text-decoration: none;
+        }
+        
+        .about-content a:hover {
+            text-decoration: underline;
+        }
+        
+        /* 可折叠服务列表 */
+        .services-section {
+            margin-bottom: 40px;
+            border: 1px solid #e1e8ed;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .services-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: #f8f9fa;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid #e1e8ed;
+        }
+        
+        .services-header:hover {
+            background: #e9ecef;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .collapse-icon {
+            font-size: 12px;
+            margin-right: 5px;
+        }
+        
+        .service-status {
+            color: #17bf63;
+            font-weight: 600;
+        }
+        
+        .services-list {
+            list-style: none;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .services-list.expanded {
+            max-height: 300px;
+            transition: max-height 0.3s ease-in;
+        }
+        
+        .service-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #f0f2f5;
+            font-size: 14px;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        
+        .services-list.expanded .service-item {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .services-list.expanded .service-item:nth-child(1) { transition-delay: 0.05s; }
+        .services-list.expanded .service-item:nth-child(2) { transition-delay: 0.1s; }
+        .services-list.expanded .service-item:nth-child(3) { transition-delay: 0.15s; }
+        .services-list.expanded .service-item:nth-child(4) { transition-delay: 0.2s; }
+        .services-list.expanded .service-item:nth-child(5) { transition-delay: 0.25s; }
+        .services-list.expanded .service-item:nth-child(6) { transition-delay: 0.3s; }
+        
+        .service-item:last-child {
+            border-bottom: none;
+        }
+        
+        .service-name {
+            color: #333;
+        }
+        
+        /* 页脚 */
+        footer {
+            border-top: 1px solid #e1e8ed;
+            padding: 20px;
+            text-align: center;
+            color: #657786;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部 -->
+    <header>
+        <div class="logo">
+            <div class="logo-icon">DT</div>
+            DreamTeam
+        </div>
+        <!-- 导航链接已移除 -->
+    </header>
+    
+    <!-- 主内容 -->
+    <main>
+        <h1 class="page-title">DreamTeam 系统状态</h1>
+        
+        <!-- 状态通知 -->
+        <div class="status-notification" style="background: #ef5350;">
+            <div class="notification-title" style="color: white;">系统部分不可用</div>
+            <div class="notification-content">
+                目前系统状态：主页和文档服务不可用，正在进行维护。其他核心服务运行正常。
+            </div>
+            <div class="notification-time" id="currentTime">2026年1月3日 - 11:14 中国北京标准时间</div>
+        </div>
+        
+        <!-- 关于本网站 -->
+        <section class="about-section">
+            <h2 class="about-title">关于本网站</h2>
+            <div class="about-content">
+                <p>DreamTeam通过其智能系统为用户提供高效的服务保障。这是DreamTeam服务的系统状态页面，包括核心服务和API的运行情况。</p>
+        </section>
+        
+        <!-- 可折叠服务列表 -->
+        <section class="services-section">
+            <div class="services-header">
+                <span><span class="collapse-icon">▶</span> DreamTeam 核心服务 </span>
+                <span class="service-status">运营情况</span>
+            </div>
+            <ul class="services-list">
+                <li class="service-item">
+                    <span class="service-name">API 服务</span>
+                    <span class="service-status">正常</span>
+                </li>
+                <li class="service-item">
+                    <span class="service-name">Web 服务</span>
+                    <span class="service-status" style="color: #ef5350;">不可用</span>
+                </li>
+                <li class="service-item">
+                    <span class="service-name">文档服务</span>
+                    <span class="service-status" style="color: #ef5350;">不可用</span>
+                </li>
+                <li class="service-item">
+                    <span class="service-name">数据库服务</span>
+                    <span class="service-status">正常</span>
+                </li>
+                <li class="service-item">
+                    <span class="service-name">存储服务</span>
+                    <span class="service-status">正常</span>
+                </li>
+                <li class="service-item">
+                    <span class="service-name">CDN 服务</span>
+                    <span class="service-status">正常</span>
+                </li>
+            </ul>
+        </section>
+    </main>
+    
+    <!-- 页脚 -->
+    <footer>
+        <p>© 2026 DreamTeam. 保留所有权利。</p>
+    </footer>
+    
+    <script>
+        // 实现服务列表的展开/收起功能
+        document.addEventListener('DOMContentLoaded', function() {
+            // 更新当前时间（直接获取北京标准时间）
+            function updateCurrentTime() {
+                const now = new Date();
+                
+                // 使用toLocaleString方法获取北京标准时间，确保时区正确
+                const options = {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false,
+                    timeZone: 'Asia/Shanghai'
+                };
+                
+                // 获取格式化的日期时间字符串，如 "2026/01/03 11:30"
+                const formattedDate = now.toLocaleString('zh-CN', options);
+                
+                // 将格式转换为 "2026年01月03日 - 11:30 CST"
+                const [dateStr, timeStr] = formattedDate.split(' ');
+                const [year, month, day] = dateStr.split('/');
+                
+                const finalTime = `${year}年${month}月${day}日 - ${timeStr} 中国北京标准时间`;
+                document.getElementById('currentTime').textContent = finalTime;
+            }
+            
+            // 调用一次更新当前时间
+            updateCurrentTime();
+            
+            // 服务列表展开/收起功能
+            const servicesHeader = document.querySelector('.services-header');
+            const servicesList = document.querySelector('.services-list');
+            const collapseIcon = document.querySelector('.collapse-icon');
+            
+            servicesHeader.addEventListener('click', function() {
+                servicesList.classList.toggle('expanded');
+                
+                // 更新折叠图标
+                if (servicesList.classList.contains('expanded')) {
+                    collapseIcon.textContent = '▼';
+                } else {
+                    collapseIcon.textContent = '▶';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
